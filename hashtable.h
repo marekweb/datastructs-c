@@ -1,20 +1,20 @@
 /* This file was automatically generated.  Do not edit! */
-typedef struct alht_ht_entry alht_ht_entry;
-alht_ht_entry *alht_ht_body_allocate(unsigned int capacity);
-typedef struct alht_ht alht_ht;
-alht_ht *alht_ht_create();
-void *alht_ht_remove(alht_ht *t,char *key);
-void alht_ht_resize(alht_ht *t,unsigned int capacity);
-void *alht_ht_set(alht_ht *t,char *key,void *value);
-void *alht_ht_get(alht_ht *t,char *key);
-unsigned int alht_ht_find_slot(alht_ht *t,char *key);
-unsigned long alht_ht_hash(char *str);
-struct alht_ht {
+typedef struct hashtable_entry hashtable_entry;
+hashtable_entry *hashtable_body_allocate(unsigned int capacity);
+typedef struct hashtable hashtable;
+hashtable *hashtable_create();
+void *hashtable_remove(hashtable *t,char *key);
+void hashtable_resize(hashtable *t,unsigned int capacity);
+void *hashtable_set(hashtable *t,char *key,void *value);
+void *hashtable_get(hashtable *t,char *key);
+unsigned int hashtable_find_slot(hashtable *t,char *key);
+unsigned long hashtable_hash(char *str);
+struct hashtable {
 	unsigned int size;
 	unsigned int capacity;
-	alht_ht_entry* body;
+	hashtable_entry* body;
 };
-struct alht_ht_entry {
+struct hashtable_entry {
 	char* key;
 	void* value; 
 };
