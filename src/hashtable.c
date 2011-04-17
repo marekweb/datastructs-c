@@ -1,9 +1,18 @@
+/**
+ * Hashtable implementatin
+ * (c) 2011 @marekweb
+ *
+ * Uses dynamic addressing with linear probing.
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
 #include "hashtable.h"
 
+/*
+ * Interface section used for `makeheaders`.
+ */
 #if INTERFACE
 struct hashtable_entry {
 	char* key;
@@ -19,7 +28,10 @@ struct hashtable {
 
 #define HASHTABLE_INITIAL_CAPACITY 2
 
-/* Compute the djb k=33 hash */
+/**
+ * Compute the hash value for the given string.
+ * Implements the djb k=33 hash function.
+ */
 unsigned long hashtable_hash(char* str)
 {
 	unsigned long hash = 5381;
@@ -29,6 +41,9 @@ unsigned long hashtable_hash(char* str)
 	return hash;
 }
 
+/**
+ * Find an available slot for the given key, using linear probing.
+ */
 unsigned int hashtable_find_slot(hashtable* t, char* key) {
 	int index = hashtable_hash(key) % t->capacity;
 	while (t->body[index].key != NULL && strcmp(t->body[index].key, key) != 0) {
@@ -37,6 +52,9 @@ unsigned int hashtable_find_slot(hashtable* t, char* key) {
 	return index;
 }
 
+/**
+ * Return the item associated with the given key, or NULL if not found.
+ */
 void* hashtable_get(hashtable* t, char* key) {
 	int index = hashtable_find_slot(t, key);
 	if (t->body[index].key != NULL) {
@@ -46,6 +64,9 @@ void* hashtable_get(hashtable* t, char* key) {
 	}
 }
 
+/**
+ * Assign a value to the given key in the table.
+ */
 void* hashtable_set(hashtable* t, char* key, void* value) {
 	int index = hashtable_find_slot(t, key);
 	if (t->body[index].key != NULL) {
@@ -65,7 +86,9 @@ void* hashtable_set(hashtable* t, char* key, void* value) {
 	}
 }
 
-
+/**
+ * Remove a key from the table
+ */
 void* hashtable_remove(hashtable* t, char* key) {
 	int index = hashtable_find_slot(t, key);
 	if (t->body[index].key != NULL) {
@@ -75,7 +98,9 @@ void* hashtable_remove(hashtable* t, char* key) {
 	}
 }
 
-
+/**
+ * Create a new, empty hashtable
+ */
 hashtable* hashtable_create() {
 	hashtable* new_ht = malloc(sizeof(hashtable));
 	new_ht->size = 0;
@@ -84,11 +109,17 @@ hashtable* hashtable_create() {
 	return new_ht;
 }
 
+/**
+ * Allocate a new memory block with the given capacity.
+ */
 hashtable_entry* hashtable_body_allocate(unsigned int capacity) {
 	return (hashtable_entry*) calloc(capacity, sizeof(hashtable_entry));
 }
 
-/* Resize the allocated memory. Warning: clears the table of all entries. */
+/**
+ * Resize the allocated memory.
+ * Warning: clears the table of all entries.
+ */
 void hashtable_resize(hashtable* t, unsigned int capacity) {
 	assert(capacity >= t->size);
 	unsigned int old_capacity = t->capacity;
@@ -101,6 +132,3 @@ void hashtable_resize(hashtable* t, unsigned int capacity) {
 		}
 	}
 }
-
-
-

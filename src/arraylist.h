@@ -15,11 +15,11 @@ void *arraylist_pop(arraylist *l);
 void arraylist_add(arraylist *l,void *item);
 void arraylist_allocate(arraylist *l,unsigned int size);
 arraylist *arraylist_create();
-struct arraylist {
-	unsigned int size;
-	unsigned int capacity;
-	void** body;
-};
 #define arraylist_iterate(l, index, item) \
 	for (index = 0, item = l->body[0]; index < l->size; item = l->body[++index])
+struct arraylist {
+	unsigned int size; // Count of items currently in list
+	unsigned int capacity; // Allocated memory size, in items
+	void** body; // Pointer to allocated memory for items (of size capacity * sizeof(void*))
+};
 #define INTERFACE 0
