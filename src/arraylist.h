@@ -1,6 +1,6 @@
 /* This file was automatically generated.  Do not edit! */
 typedef struct arraylist arraylist;
-void *arraylist_debug(arraylist *l);
+void arraylist_destroy(arraylist *l);
 void *arraylist_splice(arraylist *l,arraylist *source,unsigned int index);
 void *arraylist_join(arraylist *l,arraylist *source);
 arraylist *arraylist_copy(arraylist *l);

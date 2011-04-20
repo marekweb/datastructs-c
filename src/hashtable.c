@@ -110,6 +110,13 @@ hashtable* hashtable_create() {
 }
 
 /**
+ * Adds all items from another table.
+ */
+hashtable* hashtable_merge(hashtable* ht, hashtable* other) {
+
+}
+
+/**
  * Allocate a new memory block with the given capacity.
  */
 hashtable_entry* hashtable_body_allocate(unsigned int capacity) {
@@ -132,3 +139,9 @@ void hashtable_resize(hashtable* t, unsigned int capacity) {
 		}
 	}
 }
+
+void hashtable_destroy(hashtable* t) {
+	free(t->body);
+	free(t);
+}
+

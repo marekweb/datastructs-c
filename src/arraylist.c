@@ -6,9 +6,8 @@
  */
 
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
-#include <stdio.h>
+#include <assert.h>
 #include "arraylist.h"
 
 /*
@@ -34,6 +33,9 @@ struct arraylist {
 // Initial capacity of the arraylist
 #define ARRAYLIST_INITIAL_CAPACITY 4
 
+
+#define arraylist_memshift(s, offset, length) memmove((s) + (offset), (s), (length) * sizeof(s));
+
 /**
  * Create a new, empty arraylist.
  */
@@ -58,12 +60,12 @@ void arraylist_allocate(arraylist* l, unsigned int size) {
 		while (new_capacity < size) {
 			new_capacity *= 2;
 		}
-	//	printf("Reallocating %p from %zu to %zu to accomodate %zu items.\n", l, l->capacity, new_capacity, size);
 		l->body = realloc(l->body, sizeof(void*) * new_capacity);
 		assert(l->body);
 		l->capacity = new_capacity;
 	}
 }
+
 
 /**
  * Add item at the end of the list.
@@ -104,8 +106,8 @@ void arraylist_insert(arraylist* l, unsigned int index, void* value) {
 	// Reallocate, if needed
 	arraylist_allocate(l, l->size+1);
 	// Move data to create a spot for the new value
-	memmove(l->body + index + 1, l->body + index, l->size - index);
-
+	
+	arraylist_memshift(l->body + index, 1, l->size - index);
 	l->body[index] = value;
 	l->size++;
 }
@@ -115,7 +117,8 @@ void arraylist_insert(arraylist* l, unsigned int index, void* value) {
  */
 void* arraylist_remove(arraylist* l, unsigned int index) {
 	void* value = l->body[index];
-	memmove(l->body + index, l->body + index + 1, l->size - index);
+	//memmove(l->body + index, l->body + index + 1, (l->size - index) * sizeof(void*));
+	arraylist_memshift(l->body + index + 1, -1, l->size - index);
 	l->size--;
 	return value;
 }
@@ -167,22 +170,15 @@ void* arraylist_splice(arraylist* l, arraylist* source, unsigned int index) {
 	// Reallocate, if needed
 	arraylist_allocate(l, l->size + source->size);
 	// Move data to the right
-	memmove(l->body + index + source->size, l->body + index, (l->size - index) * sizeof(void*));
+	arraylist_memshift(l->body + index, source->size, l->size - index);
+	//memmove(l->body + index + source->size, l->body + index, (l->size - index) * sizeof(void*));
 	// Copy the data over
 	memmove(l->body + index, source->body, source->size * sizeof(void*)); 
 	l->size += source->size;
 }
 
-/** 
- * Prints a debug view of an arraylist.
- */
-void* arraylist_debug(arraylist* l) {
-	printf("Arraylist %p (%d / %d) {\n", l, l->size, l->capacity);
-	int index;
-	void* item;
-	arraylist_iterate(l, index, item) {
-		printf("   [%d] %p\n", index, item);
-	}
-	printf("}\n");
+void arraylist_destroy(arraylist* l) {
+	free(l->body);
+	free(l);
 }
 

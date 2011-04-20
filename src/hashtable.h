@@ -1,7 +1,9 @@
 /* This file was automatically generated.  Do not edit! */
+typedef struct hashtable hashtable;
+void hashtable_destroy(hashtable *t);
+hashtable *hashtable_merge(hashtable *ht,hashtable *other);
 typedef struct hashtable_entry hashtable_entry;
 hashtable_entry *hashtable_body_allocate(unsigned int capacity);
-typedef struct hashtable hashtable;
 hashtable *hashtable_create();
 void *hashtable_remove(hashtable *t,char *key);
 void hashtable_resize(hashtable *t,unsigned int capacity);
