@@ -16,7 +16,7 @@
 #if INTERFACE
 struct hashtable_entry {
 	char* key;
-	void* value; 
+	void* value;
 };
 
 struct hashtable {
@@ -44,7 +44,8 @@ unsigned long hashtable_hash(char* str)
 /**
  * Find an available slot for the given key, using linear probing.
  */
-unsigned int hashtable_find_slot(hashtable* t, char* key) {
+unsigned int hashtable_find_slot(hashtable* t, char* key)
+{
 	int index = hashtable_hash(key) % t->capacity;
 	while (t->body[index].key != NULL && strcmp(t->body[index].key, key) != 0) {
 		index = (index + 1) % t->capacity;
@@ -55,7 +56,8 @@ unsigned int hashtable_find_slot(hashtable* t, char* key) {
 /**
  * Return the item associated with the given key, or NULL if not found.
  */
-void* hashtable_get(hashtable* t, char* key) {
+void* hashtable_get(hashtable* t, char* key)
+{
 	int index = hashtable_find_slot(t, key);
 	if (t->body[index].key != NULL) {
 		return t->body[index].value;
@@ -67,29 +69,30 @@ void* hashtable_get(hashtable* t, char* key) {
 /**
  * Assign a value to the given key in the table.
  */
-void* hashtable_set(hashtable* t, char* key, void* value) {
+void* hashtable_set(hashtable* t, char* key, void* value)
+{
 	int index = hashtable_find_slot(t, key);
 	if (t->body[index].key != NULL) {
-			/* Entry exists; update it. */
-			t->body[index].value = value;
+		/* Entry exists; update it. */
+		t->body[index].value = value;
 	} else {
-			t->size ++;
-			/* Create a new  entry */
-			if ((float) t->size / t->capacity > 0.8) {
-				/* Resize the hash table */
-				hashtable_resize(t, t->capacity * 2);
-				index = hashtable_find_slot(t, key);
-			}
-			t->body[index].key = key;
-			t->body[index].value = value;
-			
+		t->size++;
+		/* Create a new  entry */
+		if ((float)t->size / t->capacity > 0.8) {
+			/* Resize the hash table */
+			hashtable_resize(t, t->capacity * 2);
+			index = hashtable_find_slot(t, key);
+		}
+		t->body[index].key = key;
+		t->body[index].value = value;
 	}
 }
 
 /**
  * Remove a key from the table
  */
-void* hashtable_remove(hashtable* t, char* key) {
+void* hashtable_remove(hashtable* t, char* key)
+{
 	int index = hashtable_find_slot(t, key);
 	if (t->body[index].key != NULL) {
 		t->body[index].key = NULL;
@@ -101,7 +104,8 @@ void* hashtable_remove(hashtable* t, char* key) {
 /**
  * Create a new, empty hashtable
  */
-hashtable* hashtable_create() {
+hashtable* hashtable_create()
+{
 	hashtable* new_ht = malloc(sizeof(hashtable));
 	new_ht->size = 0;
 	new_ht->capacity = HASHTABLE_INITIAL_CAPACITY;
@@ -112,22 +116,24 @@ hashtable* hashtable_create() {
 /**
  * Adds all items from another table.
  */
-hashtable* hashtable_merge(hashtable* ht, hashtable* other) {
-
+hashtable* hashtable_merge(hashtable* ht, hashtable* other)
+{
 }
 
 /**
  * Allocate a new memory block with the given capacity.
  */
-hashtable_entry* hashtable_body_allocate(unsigned int capacity) {
-	return (hashtable_entry*) calloc(capacity, sizeof(hashtable_entry));
+hashtable_entry* hashtable_body_allocate(unsigned int capacity)
+{
+	return (hashtable_entry*)calloc(capacity, sizeof(hashtable_entry));
 }
 
 /**
  * Resize the allocated memory.
  * Warning: clears the table of all entries.
  */
-void hashtable_resize(hashtable* t, unsigned int capacity) {
+void hashtable_resize(hashtable* t, unsigned int capacity)
+{
 	assert(capacity >= t->size);
 	unsigned int old_capacity = t->capacity;
 	hashtable_entry* old_body = t->body;
@@ -140,7 +146,8 @@ void hashtable_resize(hashtable* t, unsigned int capacity) {
 	}
 }
 
-void hashtable_destroy(hashtable* t) {
+void hashtable_destroy(hashtable* t)
+{
 	free(t->body);
 	free(t);
 }
