@@ -1,9 +1,10 @@
 /**
- * Hashtable implementatin
+ * Hashtable implementation
  * (c) 2011 @marekweb
  *
  * Uses dynamic addressing with linear probing.
  */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -69,7 +70,7 @@ void* hashtable_get(hashtable* t, char* key)
 /**
  * Assign a value to the given key in the table.
  */
-void* hashtable_set(hashtable* t, char* key, void* value)
+void hashtable_set(hashtable* t, char* key, void* value)
 {
 	int index = hashtable_find_slot(t, key);
 	if (t->body[index].key != NULL) {
@@ -91,7 +92,7 @@ void* hashtable_set(hashtable* t, char* key, void* value)
 /**
  * Remove a key from the table
  */
-void* hashtable_remove(hashtable* t, char* key)
+void hashtable_remove(hashtable* t, char* key)
 {
 	int index = hashtable_find_slot(t, key);
 	if (t->body[index].key != NULL) {
@@ -113,12 +114,14 @@ hashtable* hashtable_create()
 	return new_ht;
 }
 
+#if 0
 /**
  * Adds all items from another table.
  */
 hashtable* hashtable_merge(hashtable* ht, hashtable* other)
 {
 }
+#endif
 
 /**
  * Allocate a new memory block with the given capacity.
@@ -146,6 +149,9 @@ void hashtable_resize(hashtable* t, unsigned int capacity)
 	}
 }
 
+/**
+ * Destroy the table and deallocate it from memory. This does not deallocate the contained items.
+ */
 void hashtable_destroy(hashtable* t)
 {
 	free(t->body);

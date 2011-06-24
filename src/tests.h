@@ -1,9 +1,9 @@
 /* This file was automatically generated.  Do not edit! */
 typedef struct hashtable hashtable;
 void hashtable_destroy(hashtable *t);
-void *hashtable_remove(hashtable *t,char *key);
+void hashtable_remove(hashtable *t,char *key);
 void *hashtable_get(hashtable *t,char *key);
-void *hashtable_set(hashtable *t,char *key,void *value);
+void hashtable_set(hashtable *t,char *key,void *value);
 hashtable *hashtable_create();
 typedef struct hashtable_entry hashtable_entry;
 struct hashtable {
@@ -13,7 +13,7 @@ struct hashtable {
 };
 typedef struct arraylist arraylist;
 void arraylist_destroy(arraylist *l);
-void *arraylist_clear(arraylist *l);
+void arraylist_clear(arraylist *l);
 #define arraylist_iterate(l, index, item) \
 	for (index = 0, item = l->body[0]; index < l->size; item = l->body[++index])
 arraylist *arraylist_copy(arraylist *l);
@@ -32,5 +32,5 @@ struct arraylist {
 int main();
 struct hashtable_entry {
 	char* key;
-	void* value; 
+	void* value;
 };

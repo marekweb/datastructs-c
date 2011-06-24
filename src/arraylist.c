@@ -67,6 +67,12 @@ void arraylist_allocate(arraylist* l, unsigned int size)
 	}
 }
 
+/** 
+ * Return the number of items contained in the list.
+ */
+extern inline unsigned int arraylist_size(arraylist*l) {
+	return l->size;
+}
 
 /**
  * Add item at the end of the list.
@@ -133,7 +139,7 @@ void* arraylist_remove(arraylist* l, unsigned int index)
 /**
  * Clear list of all items.
  */
-void* arraylist_clear(arraylist* l)
+void arraylist_clear(arraylist* l)
 {
 	l->size = 0;
 }
@@ -170,7 +176,7 @@ arraylist* arraylist_copy(arraylist* l)
 /**
  * Append a list onto another, in-place.
  */
-void* arraylist_join(arraylist* l, arraylist* source)
+void arraylist_join(arraylist* l, arraylist* source)
 {
 	arraylist_splice(l, source, l->size);
 }
@@ -178,7 +184,7 @@ void* arraylist_join(arraylist* l, arraylist* source)
 /**
  * Insert a list into another at the given index, in-place.
  */
-void* arraylist_splice(arraylist* l, arraylist* source, unsigned int index)
+void arraylist_splice(arraylist* l, arraylist* source, unsigned int index)
 {
 	// Reallocate, if needed
 	arraylist_allocate(l, l->size + source->size);
