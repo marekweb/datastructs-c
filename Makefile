@@ -1,20 +1,16 @@
-CC = clang
+CC = gcc 
 CCFLAGS = -Wall -g -std=c99
 
 all: templates
 	$(CC) $(CCFLAGS) -o tests int_arraylist.c int_hashtable.c tests.c
 
 templates:
-	./maketemplate arraylist.c int int
-	./maketemplate arraylist.h int int
-	./maketemplate hashtable.c int int
-	./maketemplate hashtable.h int int 
+	./maketemplate arraylist int int
+	./maketemplate hashtable int int
 
-test:
+test: all
 	./tests
 	
-	
-
 clean:
 	rm -f int_arraylist.*
 	rm -f int_hashtable.*

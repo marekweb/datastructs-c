@@ -18,7 +18,7 @@
  */
 
 #ifndef HASHTABLE_INITIAL_CAPACITY
-#define HASHTABLE_INITIAL_CAPACITY 2
+#define HASHTABLE_INITIAL_CAPACITY 8
 #endif
 /**
  * Compute the hash value for the given string.

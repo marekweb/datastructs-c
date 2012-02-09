@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "int_arraylist.h"
-
+#include "int_hashtable.h"
 /**
  * These are tests for arraylist.c and hastable.c
  *
@@ -102,36 +102,39 @@ int main()
 	/*
 	 * Hashtable tests
 	 */
-#if 0
 	printf("Running hashtable.c tests.\n");
 
-	hashtable* t = hashtable_create();
+	int_hashtable* t = int_hashtable_create();
 
 	assert(t->size == 0);
 
-	hashtable_set(t, "alpha", a);
+	int_hashtable_set(t, "alpha", a);
 
 	assert(t->size == 1);
-	assert(hashtable_get(t, "alpha") == a);
-	assert(hashtable_get(t, "beta") == NULL);
+	int r;
+	assert(int_hashtable_get(t, "alpha", &r) == 1);
+	assert(r == a);
+	assert(int_hashtable_get(t, "beta", &r) == 0); 
 
-	hashtable_remove(t, "alpha");
+	int_hashtable_remove(t, "alpha");
 
 	assert(t->size == 0);
-	assert(hashtable_get(t, "alpha") == NULL);
+	assert(int_hashtable_get(t, "alpha", &r) == 0);
 
-	hashtable_set(t, "beta", b);
-
-	assert(t->size == 1);
-	assert(hashtable_get(t, "beta") == b);
-
-	hashtable_set(t, "beta", c);
+	int_hashtable_set(t, "beta", b);
 
 	assert(t->size == 1);
-	assert(hashtable_get(t, "beta") == c);
+	assert(int_hashtable_get(t, "beta", &r) == 1);
+	assert(r == b);
 
-	hashtable_destroy(t);
+	int_hashtable_set(t, "beta", c);
+
+	assert(t->size == 1);
+	assert(int_hashtable_get(t, "beta", &r) == 1);
+	assert(r == c);
+
+	int_hashtable_destroy(t);
 
 	printf("All tests completed.\n");
-#endif
+
 }

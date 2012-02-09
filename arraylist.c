@@ -1,7 +1,8 @@
 /**
- * Arraylist implementation
- * (c) 2011 @marekweb
+ * Generic Arraylist implementation
+ * (c) 2011-2012 Marek Zaluski
  *
+ * Instantiate the template with the maketemplate script.
  * Uses dynamic extensible arrays.
  */
 

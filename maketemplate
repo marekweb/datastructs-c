@@ -3,8 +3,9 @@
 #	TPL_N	template name (used in filename and in symbol names)
 #	TPL_T	template type argument (existing type used as the container element)
 # Usage:
-# ./maketemplate <template-file> <TPL_N> <TPL_T>
+# ./maketemplate <template-name> <TPL_N> <TPL_T>
 # Output: 
 # creates a template instance as <TPL_N>_<template-file>
 
-cat $1 | sed "s/TPL_N/$2/g" | sed "s/TPL_T/$3/g" > $2_$1
+cat $1.h | sed "s/TPL_N/$2/g" | sed "s/TPL_T/$3/g" > $2_$1.h
+cat $1.c | sed "s/TPL_N/$2/g" | sed "s/TPL_T/$3/g" > $2_$1.c
