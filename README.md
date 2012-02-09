@@ -19,8 +19,7 @@ To use Arraylist or Hashtable, you first need to instantiate the template with a
 
 ```bash
 	# maketempalte <template> <name> <type>
-	./maketemplate arraylist.c int int
-	./maketemplate arraylist.h int int
+	./maketemplate arraylist int int
 ```
 
 This creates a two new files: `int_arralist.c` and `int_arraylist.h`.
@@ -30,8 +29,7 @@ The `<name>` prefix is prepended to all function calls, i.e. you will then use `
 The <name> and <type> arguments are separate to accomodate types that can't be prepended to symbol names. For example, to create an Arraylist of strings, you can use the following:
 
 ```bash
-	./maketemplate arraylist.c str char*
-	./maketemplate arraylist.h str char*
+	./maketemplate arraylist str char*
 ```
 
 The result will be `str_arraylist` which contains elements of type `char *`.
