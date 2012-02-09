@@ -1,3 +1,4 @@
+#pragma once
 /**
  * Template for TPL_N_arraylist with element type: TPL_T
  */
