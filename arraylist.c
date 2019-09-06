@@ -33,7 +33,9 @@ struct arraylist {
 // Initial capacity of the arraylist
 #define ARRAYLIST_INITIAL_CAPACITY 4
 
-
+/**
+ * Macro to shift a section of memory by an offset, used when inserting or removing items.
+ */
 #define arraylist_memshift(s, offset, length) memmove((s) + (offset), (s), (length)* sizeof(s));
 
 /**
@@ -117,8 +119,8 @@ void arraylist_insert(arraylist* l, unsigned int index, void* value)
 {
 	// Reallocate, if needed
 	arraylist_allocate(l, l->size + 1);
-	// Move data to create a spot for the new value
 
+	// Move data to create a spot for the new value
 	arraylist_memshift(l->body + index, 1, l->size - index);
 	l->body[index] = value;
 	l->size++;
@@ -130,7 +132,6 @@ void arraylist_insert(arraylist* l, unsigned int index, void* value)
 void* arraylist_remove(arraylist* l, unsigned int index)
 {
 	void* value = l->body[index];
-	//memmove(l->body + index, l->body + index + 1, (l->size - index) * sizeof(void*));
 	arraylist_memshift(l->body + index + 1, -1, l->size - index);
 	l->size--;
 	return value;
@@ -188,9 +189,10 @@ void arraylist_splice(arraylist* l, arraylist* source, unsigned int index)
 {
 	// Reallocate, if needed
 	arraylist_allocate(l, l->size + source->size);
+
 	// Move data to the right
 	arraylist_memshift(l->body + index, source->size, l->size - index);
-	//memmove(l->body + index + source->size, l->body + index, (l->size - index) * sizeof(void*));
+
 	// Copy the data over
 	memmove(l->body + index, source->body, source->size * sizeof(void*));
 	l->size += source->size;

@@ -8,6 +8,14 @@
  * all of arraylist and hashtable functionality.
  */
 
+void arraylist_debug(arraylist* l) {
+	int i;
+	void* v;
+	arraylist_iterate(l, i, v) {
+		printf("[%i] = %p\n", i, v);
+
+	}
+}
 
 int main()
 {
@@ -21,9 +29,6 @@ int main()
 	void* d = (void*)0x503;
 	void* e = (void*)0x504;
 	void* f = (void*)0x505;
-
-
-
 
 	/*
 	 * Arraylist tests
@@ -51,14 +56,9 @@ int main()
 	assert(arraylist_pop(l) == c);
 	assert(l->size == 2);
 
-	//arraylist_debug(l);
-
 	arraylist_add(l, e);
 	arraylist_add(l, f);
 	arraylist_insert(l, 2, c);
-
-
-	//arraylist_debug(l);
 
 	assert(l->size == 5);
 	assert(arraylist_get(l, 0) == a);
@@ -86,6 +86,8 @@ int main()
 		assert(v == arraylist_get(l, i));
 	}
 
+	arraylist_debug(copy);
+
 	arraylist_clear(l);
 	assert(l->size == 0);
 	arraylist_iterate(l, i, v) {
@@ -96,12 +98,9 @@ int main()
 	arraylist_destroy(slice);
 	arraylist_destroy(copy);
 
-
-
 	/*
 	 * Hashtable tests
 	 */
-
 	printf("Running hashtable.c tests.\n");
 
 	hashtable* t = hashtable_create();

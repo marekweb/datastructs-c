@@ -1,12 +1,11 @@
 /**
  * Hashtable implementation
- * (c) 2011 @marekweb
+ * (c) 2011-2019 @marekweb
  *
  * Uses dynamic addressing with linear probing.
  */
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <assert.h>
 #include <string.h>
 #include "hashtable.h"
@@ -27,7 +26,7 @@ struct hashtable {
 };
 #endif
 
-#define HASHTABLE_INITIAL_CAPACITY 2
+#define HASHTABLE_INITIAL_CAPACITY 4
 
 /**
  * Compute the hash value for the given string.
@@ -114,26 +113,17 @@ hashtable* hashtable_create()
 	return new_ht;
 }
 
-#if 0
-/**
- * Adds all items from another table.
- */
-hashtable* hashtable_merge(hashtable* ht, hashtable* other)
-{
-}
-#endif
-
 /**
  * Allocate a new memory block with the given capacity.
  */
 hashtable_entry* hashtable_body_allocate(unsigned int capacity)
 {
+	// calloc fills the allocated memory with zeroes
 	return (hashtable_entry*)calloc(capacity, sizeof(hashtable_entry));
 }
 
 /**
  * Resize the allocated memory.
- * Warning: clears the table of all entries.
  */
 void hashtable_resize(hashtable* t, unsigned int capacity)
 {
@@ -142,6 +132,8 @@ void hashtable_resize(hashtable* t, unsigned int capacity)
 	hashtable_entry* old_body = t->body;
 	t->body = hashtable_body_allocate(capacity);
 	t->capacity = capacity;
+
+	// Copy all the old values into the newly allocated body
 	for (int i = 0; i < old_capacity; i++) {
 		if (old_body[i].key != NULL) {
 			hashtable_set(t, old_body[i].key, old_body[i].value);
@@ -157,4 +149,3 @@ void hashtable_destroy(hashtable* t)
 	free(t->body);
 	free(t);
 }
-
