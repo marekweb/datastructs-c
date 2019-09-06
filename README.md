@@ -1,12 +1,16 @@
 Arraylist and Hashtable in C
 ============================
 
-(c) 2011 @marekweb
+(c) 2011-2019 @marekweb
 
 Objective
 ---------
 
-Lists and mappings are two of the most common generic data types. This library implements both, independantly, in pure C. It aims to be simple and concise, while being completely generic.
+Lists and hashtables are two of the most common generic data types. 
+
+This library implements [lists (as arrays, or "arraylists")](arraylist.c) and [hashtables (with open addressing, linear probing)](hashtable.c) in pure C.
+
+It aims to be simple and concise, while being completely generic.
 
 It uses void pointers (`void*`) as its value type in order to remain generic. In other words, you can use it to store any kind of reference values, including strings.
 
