@@ -132,7 +132,7 @@ void arraylist_insert(arraylist* l, unsigned int index, void* value)
 void* arraylist_remove(arraylist* l, unsigned int index)
 {
 	void* value = l->body[index];
-	arraylist_memshift(l->body + index + 1, -1, l->size - index);
+	arraylist_memshift(l->body + index + 1, -1, l->size - (index + 1));
 	l->size--;
 	return value;
 }

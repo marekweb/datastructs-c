@@ -76,13 +76,13 @@ void hashtable_set(hashtable* t, char* key, void* value)
 		/* Entry exists; update it. */
 		t->body[index].value = value;
 	} else {
-		t->size++;
 		/* Create a new  entry */
-		if ((float)t->size / t->capacity > 0.8) {
+		if ((float)(t->size+1) / t->capacity > 0.8) {
 			/* Resize the hash table */
 			hashtable_resize(t, t->capacity * 2);
 			index = hashtable_find_slot(t, key);
 		}
+		t->size++;
 		t->body[index].key = key;
 		t->body[index].value = value;
 	}
@@ -132,6 +132,7 @@ void hashtable_resize(hashtable* t, unsigned int capacity)
 	hashtable_entry* old_body = t->body;
 	t->body = hashtable_body_allocate(capacity);
 	t->capacity = capacity;
+	t->size = 0;
 
 	// Copy all the old values into the newly allocated body
 	for (int i = 0; i < old_capacity; i++) {
@@ -139,6 +140,7 @@ void hashtable_resize(hashtable* t, unsigned int capacity)
 			hashtable_set(t, old_body[i].key, old_body[i].value);
 		}
 	}
+	free(old_body);
 }
 
 /**
