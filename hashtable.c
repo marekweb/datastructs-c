@@ -27,6 +27,7 @@ struct hashtable {
 #endif
 
 #define HASHTABLE_INITIAL_CAPACITY 4
+#define HASHTABLE_TOMBSTONE ((char*)-1)
 
 /**
  * Compute the hash value for the given string.
@@ -46,8 +47,10 @@ unsigned long hashtable_hash(char* str)
  */
 unsigned int hashtable_find_slot(hashtable* t, char* key)
 {
+	assert(key != NULL && key != HASHTABLE_TOMBSTONE);
 	int index = hashtable_hash(key) % t->capacity;
-	while (t->body[index].key != NULL && strcmp(t->body[index].key, key) != 0) {
+	while (t->body[index].key != NULL &&
+	       (t->body[index].key == HASHTABLE_TOMBSTONE || strcmp(t->body[index].key, key) != 0)) {
 		index = (index + 1) % t->capacity;
 	}
 	return index;
@@ -95,7 +98,7 @@ void hashtable_remove(hashtable* t, char* key)
 {
 	int index = hashtable_find_slot(t, key);
 	if (t->body[index].key != NULL) {
-		t->body[index].key = NULL;
+		t->body[index].key = HASHTABLE_TOMBSTONE;
 		t->body[index].value = NULL;
 		t->size--;
 	}
@@ -135,7 +138,7 @@ void hashtable_resize(hashtable* t, unsigned int capacity)
 
 	// Copy all the old values into the newly allocated body
 	for (int i = 0; i < old_capacity; i++) {
-		if (old_body[i].key != NULL) {
+		if (old_body[i].key != NULL && old_body[i].key != HASHTABLE_TOMBSTONE) {
 			hashtable_set(t, old_body[i].key, old_body[i].value);
 		}
 	}
