@@ -26,7 +26,7 @@ struct arraylist {
  * variables as containers.
  */
 #define arraylist_iterate(l, index, item) \
-	for (index = 0, item = l->body[0]; index < l->size; item = l->body[++index])
+	for ((index) = 0; (index) < (l)->size && (((item) = (l)->body[(index)]), 1); (index)++)
 
 #endif
 
@@ -36,7 +36,8 @@ struct arraylist {
 /**
  * Macro to shift a section of memory by an offset, used when inserting or removing items.
  */
-#define arraylist_memshift(s, offset, length) memmove((s) + (offset), (s), (length)* sizeof(s));
+#define arraylist_memshift(s, offset, length) \
+	memmove((s) + (offset), (s), (length) * sizeof(*(s)));
 
 /**
  * Create a new, empty arraylist.
@@ -131,8 +132,9 @@ void arraylist_insert(arraylist* l, unsigned int index, void* value)
  */
 void* arraylist_remove(arraylist* l, unsigned int index)
 {
+	assert(index < l->size);
 	void* value = l->body[index];
-	arraylist_memshift(l->body + index + 1, -1, l->size - index);
+	arraylist_memshift(l->body + index + 1, -1, l->size - index - 1);
 	l->size--;
 	return value;
 }
@@ -203,4 +205,3 @@ void arraylist_destroy(arraylist* l)
 	free(l->body);
 	free(l);
 }
-

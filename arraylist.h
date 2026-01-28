@@ -17,7 +17,7 @@ inline unsigned int arraylist_size(arraylist *l);
 void arraylist_allocate(arraylist *l,unsigned int size);
 arraylist *arraylist_create();
 #define arraylist_iterate(l, index, item) \
-	for (index = 0, item = l->body[0]; index < l->size; item = l->body[++index])
+	for ((index) = 0; (index) < (l)->size && (((item) = (l)->body[(index)]), 1); (index)++)
 struct arraylist {
 	unsigned int size; // Count of items currently in list
 	unsigned int capacity; // Allocated memory size, in items

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
-#include "tests.h"
+#include "arraylist.h"
+#include "hashtable.h"
 /**
  * These are tests for arraylist.c and hastable.c
  *
