@@ -1,7 +1,10 @@
-tests: arraylist.c hashtable.c tests.c
-	gcc -o tests arraylist.c hashtable.c tests.c && ./tests
+SOURCES = arraylist.c hashtable.c tests.c
+
+tests: $(SOURCES)
+	gcc -fsanitize=address -g -o tests $(SOURCES)
+	./tests
 
 .PHONY: clean
 
 clean:
-	rm tests
+	rm -f tests
