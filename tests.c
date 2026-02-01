@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
-#include "tests.h"
+#include "arraylist.h"
+#include "hashtable.h"
 /**
  * These are tests for arraylist.c and hastable.c
  *
@@ -97,6 +98,38 @@ int main()
 	arraylist_destroy(l);
 	arraylist_destroy(slice);
 	arraylist_destroy(copy);
+
+	/*
+	 * Test: arraylist_remove should not read beyond array bounds.
+	 * When size == capacity and we remove from the middle, the memshift
+	 * should not access memory beyond the last valid element.
+	 */
+	arraylist* l2 = arraylist_create();
+	arraylist_add(l2, a);
+	arraylist_add(l2, b);
+	arraylist_add(l2, c);
+	arraylist_add(l2, d);
+	// Now size == capacity == 4
+
+	// Remove from index 1: should shift elements at indices 2,3 left
+	// Bug: current code tries to also read index 4 (out of bounds)
+	void* removed = arraylist_remove(l2, 1);
+	assert(removed == b);
+	assert(l2->size == 3);
+	assert(arraylist_get(l2, 0) == a);
+	assert(arraylist_get(l2, 1) == c);
+	assert(arraylist_get(l2, 2) == d);
+
+	// Remove from last valid index when at capacity boundary
+	arraylist_add(l2, e);  // size == capacity == 4 again
+	removed = arraylist_remove(l2, 2);
+	assert(removed == d);
+	assert(l2->size == 3);
+	assert(arraylist_get(l2, 0) == a);
+	assert(arraylist_get(l2, 1) == c);
+	assert(arraylist_get(l2, 2) == e);
+
+	arraylist_destroy(l2);
 
 	/*
 	 * Hashtable tests
