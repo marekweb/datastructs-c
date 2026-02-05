@@ -164,22 +164,50 @@ int main()
 	hashtable_destroy(t);
 
 	/*
+	 * Test: hashtable_remove should not break linear probing chains.
+	 * Keys "ab" and "ba" both hash to the same slot (0) with capacity 4.
+	 * Removing "ab" should not prevent finding "ba".
+	 */
+	hashtable* t2 = hashtable_create();
+
+	hashtable_set(t2, "ab", a);  // Goes to slot 0
+	hashtable_set(t2, "ba", b);  // Collision, goes to slot 1
+
+	// Both should be findable
+	assert(hashtable_get(t2, "ab") == a);
+	assert(hashtable_get(t2, "ba") == b);
+
+	// Remove the first one in the chain
+	hashtable_remove(t2, "ab");
+
+	// "ba" should still be findable (this will fail with the current bug)
+	assert(hashtable_get(t2, "ba") == b);
+
+	// Re-insert "ab" with a different value
+	hashtable_set(t2, "ab", c);
+	assert(hashtable_get(t2, "ab") == c);
+	assert(hashtable_get(t2, "ba") == b);  // "ba" should still work
+	assert(t2->size == 2);
+
+	hashtable_destroy(t2);
+
+	/*
 	 * Test: hashtable_resize should preserve accurate size count.
 	 * Insert 4 unique entries to trigger resize (>80% load).
 	 */
-	hashtable* t2 = hashtable_create();
-	assert(t2->size == 0);
+	hashtable* t3 = hashtable_create();
+	assert(t3->size == 0);
 
-	hashtable_set(t2, "k1", a);
-	hashtable_set(t2, "k2", b);
-	hashtable_set(t2, "k3", c);
-	hashtable_set(t2, "k4", d);
+	hashtable_set(t3, "k1", a);
+	hashtable_set(t3, "k2", b);
+	hashtable_set(t3, "k3", c);
+	hashtable_set(t3, "k4", d);
 
-	assert(t2->size == 4);
-	assert(hashtable_get(t2, "k1") == a);
-	assert(hashtable_get(t2, "k4") == d);
+	assert(t3->size == 4);
+	assert(hashtable_get(t3, "k1") == a);
+	assert(hashtable_get(t3, "k4") == d);
 
-	hashtable_destroy(t2);
+	hashtable_destroy(t3);
 
 	printf("All tests completed.\n");
 }
