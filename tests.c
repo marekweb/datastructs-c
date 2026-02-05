@@ -191,5 +191,23 @@ int main()
 
 	hashtable_destroy(t2);
 
+	/*
+	 * Test: hashtable_resize should preserve accurate size count.
+	 * Insert 4 unique entries to trigger resize (>80% load).
+	 */
+	hashtable* t3 = hashtable_create();
+	assert(t3->size == 0);
+
+	hashtable_set(t3, "k1", a);
+	hashtable_set(t3, "k2", b);
+	hashtable_set(t3, "k3", c);
+	hashtable_set(t3, "k4", d);
+
+	assert(t3->size == 4);
+	assert(hashtable_get(t3, "k1") == a);
+	assert(hashtable_get(t3, "k4") == d);
+
+	hashtable_destroy(t3);
+
 	printf("All tests completed.\n");
 }
