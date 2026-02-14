@@ -49,11 +49,21 @@ unsigned int hashtable_find_slot(hashtable* t, char* key)
 {
 	assert(key != NULL && key != HASHTABLE_TOMBSTONE);
 	int index = hashtable_hash(key) % t->capacity;
-	while (t->body[index].key != NULL &&
-	       (t->body[index].key == HASHTABLE_TOMBSTONE || strcmp(t->body[index].key, key) != 0)) {
+	int first_tombstone = -1;
+	for (unsigned int i = 0; i < t->capacity; i++) {
+		if (t->body[index].key == NULL) {
+			return (first_tombstone != -1) ? first_tombstone : index;
+		}
+		if (t->body[index].key == HASHTABLE_TOMBSTONE) {
+			if (first_tombstone == -1) first_tombstone = index;
+		} else if (strcmp(t->body[index].key, key) == 0) {
+			return index;
+		}
 		index = (index + 1) % t->capacity;
 	}
-	return index;
+	/* All slots probed without finding key or NULL; reuse a tombstone. */
+	assert(first_tombstone != -1);
+	return first_tombstone;
 }
 
 /**
@@ -62,7 +72,7 @@ unsigned int hashtable_find_slot(hashtable* t, char* key)
 void* hashtable_get(hashtable* t, char* key)
 {
 	int index = hashtable_find_slot(t, key);
-	if (t->body[index].key != NULL) {
+	if (t->body[index].key != NULL && t->body[index].key != HASHTABLE_TOMBSTONE) {
 		return t->body[index].value;
 	} else {
 		return NULL;
@@ -75,7 +85,7 @@ void* hashtable_get(hashtable* t, char* key)
 void hashtable_set(hashtable* t, char* key, void* value)
 {
 	int index = hashtable_find_slot(t, key);
-	if (t->body[index].key != NULL) {
+	if (t->body[index].key != NULL && t->body[index].key != HASHTABLE_TOMBSTONE) {
 		/* Entry exists; update it. */
 		t->body[index].value = value;
 	} else {
@@ -97,7 +107,7 @@ void hashtable_set(hashtable* t, char* key, void* value)
 void hashtable_remove(hashtable* t, char* key)
 {
 	int index = hashtable_find_slot(t, key);
-	if (t->body[index].key != NULL) {
+	if (t->body[index].key != NULL && t->body[index].key != HASHTABLE_TOMBSTONE) {
 		t->body[index].key = HASHTABLE_TOMBSTONE;
 		t->body[index].value = NULL;
 		t->size--;

@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
+#include <signal.h>
+#include <unistd.h>
 #include "arraylist.h"
 #include "hashtable.h"
 /**
@@ -208,6 +210,36 @@ int main()
 	assert(hashtable_get(t3, "k4") == d);
 
 	hashtable_destroy(t3);
+
+	/*
+	 * Test: inserting into a table full of tombstones should not infinite loop.
+	 * Keys "ab", "ba", "cd", "dc", "ef" all hash to slot 0 with capacity 4.
+	 */
+	signal(SIGALRM, SIG_DFL);
+	alarm(2);
+
+	hashtable* t4 = hashtable_create();
+	hashtable_set(t4, "ab", a);  // slot 0
+	hashtable_set(t4, "ba", b);  // slot 1
+	hashtable_set(t4, "cd", c);  // slot 2
+
+	hashtable_remove(t4, "ab");  // tombstone at 0
+	hashtable_remove(t4, "ba");  // tombstone at 1
+	hashtable_remove(t4, "cd");  // tombstone at 2
+
+	// "dc" hashes to slot 0, probes past tombstones, lands on slot 3 (NULL)
+	hashtable_set(t4, "dc", d);
+
+	// "ef" hashes to slot 0: all 4 slots are non-NULL (3 tombstones + "dc")
+	// Bug: hashtable_find_slot loops forever here
+	hashtable_set(t4, "ef", e);
+
+	assert(t4->size == 2);
+	assert(hashtable_get(t4, "dc") == d);
+	assert(hashtable_get(t4, "ef") == e);
+
+	alarm(0);
+	hashtable_destroy(t4);
 
 	printf("All tests completed.\n");
 }
